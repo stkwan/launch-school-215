@@ -32,37 +32,26 @@ let longText = 'Four score and seven years ago our fathers brought forth' +
 
 // Logs longest sentence and how many words it has.
 function longestSentence(text) {
-  const regexDelimiters = /\.|\?|!/g;
-  let sentences = text.split(regexDelimiters);
+  let sentences = text.split(/(?<=[.!?])/g);
+  sentences = sentences.map(sentence => sentence.trim());
 
   let validSents = sentences.filter(sentence => {
-    return validWord(wordsArray(sentence)[0]);
+    return sentence[0].match(/\w/);
   });
 
   let longestSent = validSents.reduce((sent1, sent2) => {
-    return wordsArray(sent1).length > wordsArray(sent2).length ? sent1 : sent2;
+    return sentLength(sent1) > sentLength(sent2) ? sent1 : sent2;
   });
 
-  let wordCount = wordsArray(longestSent).length;
-
-  console.log(longestSent + '.');
+  console.log(longestSent);
   console.log('');
-  console.log(`The longest sentence has ${wordCount} words.`);
+  console.log(`The longest sentence has ${sentLength(longestSent)} words.`);
 }
 
-// Returns an array of words in the given sentence.
-function wordsArray(sentence) {
-  if (!sentence) return [];
+// Returns number of words in the given sentence.
+function sentLength(sentence) {
   const regexParseWords = /[^ .?!,]+/g;
-  return sentence.match(regexParseWords);
-}
-
-// Returns a boolean indicating if word is a valid word.
-function validWord(word) {
-  if (!word) return false;
-  const regexIsWord = /[a-z]/i;
-  let wordsArray = word.split('');
-  return wordsArray.every(char => regexIsWord.test(char));
+  return sentence.match(regexParseWords).length;
 }
 
 console.log(longestSentence(longText));
